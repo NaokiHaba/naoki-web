@@ -2,6 +2,33 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogPost from "../../components/BlogPost.astro";
 
+type StaticPath = {
+    params: {
+        tag: string,
+    },
+    props: {
+        posts: any[],  // ここには適切な型を割り当てるべきです。プロパティの型は、関数がどういう値を返すかによって変わるので適宜修正してください。
+    }
+}
+
+export async function getStaticPaths(): Promise<StaticPath[]> {
+    const allPosts = await Astro.glob("../posts/*.md");
+
+    const uniqueTags = [
+        ...new Set(allPosts.map((post) => post.frontmatter.tags).flat())
+    ];
+
+    return uniqueTags.map((tag) => {
+        const filteredPosts = allPosts.filter((post) =>
+            post.frontmatter.tags.includes(tag)
+        );
+        return {
+            params: {tag},
+            props: {posts: filteredPosts}
+        };
+    });
+}
+
 const {tag} = Astro.params;
 const {posts} = Astro.props;
 ---
