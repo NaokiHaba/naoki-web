@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogPost from "../../components/BlogPost.astro";
+
+const {tag} = Astro.params;
+const {posts} = Astro.props;
+---
+
+<BaseLayout pageTitle={tag}>
+	<p>Posts tagged with {tag}</p>
+	<ul>
+        {
+            posts.map((post: { url: string, frontmatter: { title: string } }) => (
+					<BlogPost url={post.url} title={post.frontmatter.title}/>
+            ))
+        }
+	</ul>
+</BaseLayout>
